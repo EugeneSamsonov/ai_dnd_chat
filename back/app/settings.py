@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'drf_spectacular',
+
+    'apps.rooms',
+    'apps.chat',
 ]
 
 MIDDLEWARE = [
@@ -107,9 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -142,6 +145,9 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True, # Нужно подтверждение пароля при регистрации
+    'SCHEMA_PATH_PREFIX': r'/api/', # Игнорировать этот префикс при группировке
+    # Это заставит Swagger использовать первый сегмент пути как тег
+    'SCHEMA_COERCION': 'project_name.utils.custom_coercion', 
     # 'SERIALIZERS': {
     #     # Здесь можно переопределить стандартные сериализаторы, если добавишь свои поля
     # },

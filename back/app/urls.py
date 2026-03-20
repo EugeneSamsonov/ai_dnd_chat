@@ -23,12 +23,18 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # users API 
-    path('api/v1/auth/', include('djoser.urls')),
-    path('api/v1/auth/', include('djoser.urls.authtoken')),
-
     # schema
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    
+    # users API 
+    path('api/v1/auth/', include('djoser.urls')),
+    path('api/v1/auth/', include('djoser.urls.authtoken')),
+
+    # chat API
+    path('api/v1/chat/', include('apps.chat.api.urls')),
+
+    # rooms API
+    path('api/v1/rooms/', include('apps.rooms.api.urls')),
 ]
