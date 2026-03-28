@@ -1,6 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import { useAuthStore } from "../features/auth/authStore";
 import api from "../api/axios";
+
+import { handleApiError } from "../utils/errorHandler";
 
 const Header = () => {
   const { isAuthenticated, logout, username } = useAuthStore();
@@ -9,9 +13,11 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await api.post("auth/token/logout/"); // Стучимся к Djoser
+      toast.success("Вы успешно вышли!");
     } catch (e) {
-      console.error("Logout failed", e);
+      handleApiError(e);
     } finally {
+      // На случай если токен стал невалиден
       logout(); // Чистим стор и localStorage
       navigate("/login");
     }

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../api/axios";
-import { useAuthStore } from "../features/auth/authStore";
+import { toast } from "react-toastify";
 
-import { toast } from 'react-toastify';
+import api from "../api/axios";
+
+import { useAuthStore } from "../features/auth/authStore";
+import { handleApiError } from "../utils/errorHandler";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -27,14 +29,7 @@ const LoginPage = () => {
       toast.success("Добро пожаловать!");
       navigate("/");
     } catch (e) {
-      const errors = e.response?.data;
-      if (errors) {
-        Object.keys(errors).forEach((key) => {
-          toast.error(`${key}: ${errors[key].join(", ")}`);
-        });
-      } else {
-        toast.error("Что-то пошло не так на сервере");
-      }
+      handleApiError(e);
     }
   };
 

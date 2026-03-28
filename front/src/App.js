@@ -13,7 +13,6 @@ import Header from "./components/Header";
 
 import MainPage from "./pages/MainPage";
 
-// Обертка для защищенных страниц (как login_required в Django)
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return isAuthenticated ? children : <Navigate to="/login" />;
