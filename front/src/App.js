@@ -1,16 +1,17 @@
 // src/App.js
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAuthStore } from "./features/auth/authStore";
-
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+import { useAuthStore } from "./features/auth/authStore";
+import api from "./api/axios";
 
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
 
+import Header from "./components/Header";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import Header from "./components/Header";
-
 import MainPage from "./pages/MainPage";
 
 const PrivateRoute = ({ children }) => {
@@ -19,6 +20,25 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
+  const token = useAuthStore((state) => state.token);
+
+  useEffect(() => {
+    if (token) {
+      api
+        .get("auth/users/me/")
+        .then((response) => {
+          useAuthStore.getState().login(token, response.data);
+        })
+        .catch((e) => {
+          console.log("Ошибка проверки сессии:", e);
+
+          if (e.response.status === 401) {
+            useAuthStore.getState().logout();
+          }
+        });
+    }
+  });
+
   return (
     <>
       <BrowserRouter>

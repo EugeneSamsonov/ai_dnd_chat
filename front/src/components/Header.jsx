@@ -6,8 +6,14 @@ import api from "../api/axios";
 
 import { handleApiError } from "../utils/errorHandler";
 
+import logoutIcon from "../assets/logout.png";
+import dndIcon from "../assets/dndIcon.png";
+
 const Header = () => {
-  const { isAuthenticated, logout, username } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const logout = useAuthStore((state) => state.logout);
+
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -26,23 +32,27 @@ const Header = () => {
   if (!isAuthenticated) return null; // Если не вошел, хедер можно скрыть
 
   return (
-    <nav
-      style={{
-        display: "flex",
-        gap: "20px",
-        padding: "10px",
-        borderBottom: "1px solid #ccc",
-      }}
-    >
-      <Link to="/">Главная</Link>
-      <Link to="/rooms">Комнаты</Link>
-      <div>
-        <span>
-          Привет, <b>{username || "Игрок"}</b>
-        </span>
-        <button onClick={handleLogout}>Выйти</button>
-      </div>
-    </nav>
+    <header>
+      <nav>
+        <div className="header-elements">
+          <Link to="/">
+            <img className="dnd-logo-icon" src={dndIcon} alt="" />
+          </Link>
+          {/* <Link to="/rooms">Комнаты</Link> */}
+        </div>
+
+        <div>
+          <h2 className="header-title">DnD AI Chat</h2>
+        </div>
+
+        <div className="header-elements">
+          <span>Привет, {user?.username || "Игрок"}</span>
+          <button className="logout-button" onClick={handleLogout}>
+            <img src={logoutIcon} alt="Разлогиниться" />
+          </button>
+        </div>
+      </nav>
+    </header>
   );
 };
 

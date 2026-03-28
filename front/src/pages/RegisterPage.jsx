@@ -43,7 +43,11 @@ const RegisterPage = () => {
 
       const token = response.data.auth_token;
 
-      login(token);
+      const userRes = await api.get("auth/users/me/", {
+        headers: { Authorization: `Token ${token}` },
+      });
+
+      login(token, userRes.data);
       toast.success("Регистрация прошла успешна! Добро пожаловать!");
       navigate("/");
     } catch (e) {

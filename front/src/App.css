@@ -75,3 +75,74 @@ a span {
   text-decoration: none;
   color: #ee3d48;
 }
+
+header {
+  text-align: center;
+  padding: 0 10px 0 10px;
+  background-color: #ee3d48;
+  color: white;
+}
+
+header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-elements {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* .header-elements a {
+  color: white;
+  text-decoration: none;
+  padding: 5px;
+  transition: all 0.4s ease-in-out;
+}
+
+.header-elements a:hover {
+  color: black;
+  background-color: white;
+  border-radius: 5px;
+} */
+
+.dnd-logo-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.header-title {
+  /* font-size: larger; */
+  font-weight: bolder;
+  margin: 15px;
+  margin-left: 100px;
+  /* position: absolute; */
+  /* left: 43%; */ 
+}
+
+.logout-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #ee3d48;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+
+  width: 30px;
+  height: 35px;
+}
+/* for alt img in logout-button */
+.logout-button img {
+  width: 20px;
+  height: 25px;
+  transition: all 0.4s ease-in-out;
+}
+
+.logout-button img:hover {
+  width: 30px;
+  height: 35px;
+}
