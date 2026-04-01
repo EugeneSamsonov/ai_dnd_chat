@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import CreateRoomModal from "../features/rooms/CreateRoomModal";
 
-// import { useAuthStore } from "../features/auth/authStore";
 import { handleApiError } from "../utils/errorHandler";
 
 import roomSettingsIcon from "../assets/roomSettingsIcon.png";
@@ -17,14 +16,19 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const addNewRoom = (newRoom) => {
-    setRooms((prevRooms) => [...prevRooms, newRoom]);
+    setRooms((prevRooms) => {
+      if (!Array.isArray(prevRooms)) {
+        return [newRoom];
+      }
+      return [newRoom, ...prevRooms];
+    });
   };
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         const response = await api.get("rooms/");
-        setRooms(response.data);
+        setRooms(response.data.results);
       } catch (error) {
         handleApiError(error);
       } finally {
@@ -34,6 +38,7 @@ const HomePage = () => {
     fetchRooms();
   }, []);
 
+//   console.log(rooms);
   if (loading) {
     return <h1>Загрузка...</h1>;
   }
@@ -54,11 +59,11 @@ const HomePage = () => {
         onRoomCreated={addNewRoom}
       />
 
-      {rooms.results.length > 0 ? (
+      {rooms.length > 0 ? (
         <>
           <h1 className="center">Ваши приключения</h1>
           <div className="room-list">
-            {rooms.results.map((room) => (
+            {rooms.map((room) => (
               <div className="room-card-container">
                 <div
                   key={room.id}
@@ -73,11 +78,11 @@ const HomePage = () => {
                   <span>Ход №{room.turn_count}</span>
                 </div>
                 <img
-                    src={roomSettingsIcon}
-                    alt="Настройки"
-                    onClick={() => navigate(`/rooms/${room.id}`)}
-                    className="room-settings-icon"
-                  />
+                  src={roomSettingsIcon}
+                  alt="Настройки"
+                  onClick={() => navigate(`/rooms/${room.id}`)}
+                  className="room-settings-icon"
+                />
               </div>
             ))}
           </div>

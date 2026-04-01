@@ -18,9 +18,9 @@ const CreateRoomModal = ({ isOpen, onClose, onRoomCreated }) => {
         isAiDM: isAiDM,
         passcode: passcode,
       });
-      //   onRoomCreated(response.data);
+      onRoomCreated(response.data);
       onClose();
-      console.log(response);
+        console.log(response.data);
     } catch (error) {
       handleApiError(error);
     }
