@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/Header";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import MainPage from "./pages/MainPage";
+import HomePage from "./pages/HomePage";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -52,7 +52,7 @@ function App() {
             path="/"
             element={
               <PrivateRoute>
-                <MainPage />
+                <HomePage />
               </PrivateRoute>
             }
           />

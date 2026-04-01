@@ -1,0 +1,131 @@
+/* Задний фон (оверлей) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0); /* Начинаем с прозрачного */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  visibility: hidden;
+  transition:
+    background-color 0.3s ease,
+    visibility 0.3s;
+  pointer-events: none; /* Пропускает клики сквозь себя, когда закрыто */
+}
+
+/* Когда модалка открыта */
+.modal-overlay.active {
+  background-color: rgba(0, 0, 0, 0.7);
+  visibility: visible;
+  pointer-events: auto; /* Блокирует клики под собой */
+}
+
+/* Само окно */
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  min-width: 50%;
+  transform: translateY(-20px); /* Начинаем чуть выше */
+  opacity: 0;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 40%;
+  border: 2px solid #ee3d48;
+}
+
+/* Когда модалка открыта */
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.modal-content h3 {
+  margin: 0;
+  margin-bottom: 16px;
+}
+
+.modal-actions {
+  margin-left: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  width: 100%;
+}
+
+.modal-form input {
+  width: 80%;
+}
+
+.modal-cancel-button {
+  background-color: #ee3d48;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 0 12px 0 12px;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+  border: 1px solid #ee3d48;
+
+  position: absolute;
+  top: 0%;
+  right: 0%;
+}
+
+.modal-cancel-button:hover {
+  background-color: #fff;
+  color: #ee3d48;
+}
+
+.modal-create-button {
+  background-color: #ee3d48;
+  color: #fff;
+  border: none;
+  /* padding: 8px 16px; */
+  border-radius: 12px 0 12px 0;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+  border: 1px solid #ee3d48;
+
+  position: absolute;
+  bottom: 0%;
+  right: 0%;
+}
+
+.modal-create-button:hover {
+  background-color: #fff;
+  color: #ee3d48;
+}
+
+.modal-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-checkbox input {
+  width: 15px;
+  height: 15px;
+}
+
+.modal-checkbox label {
+  white-space: nowrap;
+}
