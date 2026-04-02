@@ -15,6 +15,8 @@ const HomePage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+
   const addNewRoom = (newRoom) => {
     setRooms((prevRooms) => {
       if (!Array.isArray(prevRooms)) {
@@ -23,6 +25,11 @@ const HomePage = () => {
       return [newRoom, ...prevRooms];
     });
   };
+
+  const isRoomAdmin = (room) =>
+    room.participants?.some(
+      (p) => String(p.user) === String(currentUser?.id) && p.is_room_admin,
+    );
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -38,7 +45,6 @@ const HomePage = () => {
     fetchRooms();
   }, []);
 
-//   console.log(rooms);
   if (loading) {
     return <h1>Загрузка...</h1>;
   }
@@ -77,12 +83,14 @@ const HomePage = () => {
                   </p>
                   <span>Ход №{room.turn_count}</span>
                 </div>
-                <img
-                  src={roomSettingsIcon}
-                  alt="Настройки"
-                  onClick={() => navigate(`/rooms/${room.id}`)}
-                  className="room-settings-icon"
-                />
+                {isRoomAdmin(room) && (
+                  <img
+                    src={roomSettingsIcon}
+                    alt="Настройки"
+                    onClick={() => navigate(`/rooms/${room.id}`)}
+                    className="room-settings-icon"
+                  />
+                )}
               </div>
             ))}
           </div>
