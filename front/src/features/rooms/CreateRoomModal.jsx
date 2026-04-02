@@ -1,14 +1,18 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 import api from "../../api/axios";
 
 import { handleApiError } from "../../utils/errorHandler";
 import "./CreateRoomModal.css";
 
-const CreateRoomModal = ({ isOpen, onClose, onRoomCreated }) => {
+const CreateRoomModal = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [isAiDM, setisAiDM] = useState("");
   const [passcode, setPasscode] = useState("");
+  
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,9 +22,12 @@ const CreateRoomModal = ({ isOpen, onClose, onRoomCreated }) => {
         isAiDM: isAiDM,
         passcode: passcode,
       });
-      onRoomCreated(response.data);
+
+      queryClient.invalidateQueries({ queryKey: ["rooms"] }); // обновляем кэш
+      toast.success("Комната создана!");
+
+      setName("");
       onClose();
-        console.log(response.data);
     } catch (error) {
       handleApiError(error);
     }

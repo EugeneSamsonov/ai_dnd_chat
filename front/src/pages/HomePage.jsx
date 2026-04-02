@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import api from "../api/axios";
 import CreateRoomModal from "../features/rooms/CreateRoomModal";
@@ -9,43 +10,29 @@ import { handleApiError } from "../utils/errorHandler";
 import roomSettingsIcon from "../assets/roomSettingsIcon.png";
 
 const HomePage = () => {
-  const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const currentUser = JSON.parse(localStorage.getItem("user"));
-
-  const addNewRoom = (newRoom) => {
-    setRooms((prevRooms) => {
-      if (!Array.isArray(prevRooms)) {
-        return [newRoom];
-      }
-      return [newRoom, ...prevRooms];
-    });
-  };
 
   const isRoomAdmin = (room) =>
     room.participants?.some(
       (p) => String(p.user) === String(currentUser?.id) && p.is_room_admin,
     );
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const response = await api.get("rooms/");
-        setRooms(response.data.results);
-      } catch (error) {
-        handleApiError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRooms();
-  }, []);
+  const { data: rooms = [], isLoading } = useQuery({
+    queryKey: ["rooms"],
+    queryFn: () =>
+      api
+        .get("rooms/")
+        .then((response) => response.data.results)
+        .catch((e) => handleApiError(e)),
+    staleTime: 60 * 60 * 1000, // Данные считаются свежими 60 минут.
 
-  if (loading) {
+    refetchOnWindowFocus: false, // НЕ делать запрос при каждом возвращении во вкладку
+    refetchOnMount: false, // НЕ делать запрос, если данные уже есть в кэше
+  });
+
+  if (isLoading) {
     return <h1>Загрузка...</h1>;
   }
 
@@ -62,7 +49,7 @@ const HomePage = () => {
       <CreateRoomModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onRoomCreated={addNewRoom}
+        // onRoomCreated={addNewRoom}
       />
 
       {rooms.length > 0 ? (

@@ -1,6 +1,5 @@
-// src/App.js
-import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 
 import { useAuthStore } from "./features/auth/authStore";
@@ -20,24 +19,30 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
-  const token = useAuthStore((state) => state.token);
+  const { isAuthenticated, login, logout } = useAuthStore();
 
-  useEffect(() => {
-    if (token) {
-      api
-        .get("auth/users/me/")
-        .then((response) => {
-          useAuthStore.getState().login(token, response.data);
-        })
-        .catch((e) => {
-          console.log("Ошибка проверки сессии:", e);
+  const { isLoading } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => api.get("auth/users/me/").then((res) => res.data),
+    enabled: isAuthenticated,
+    onSuccess: (userData) => {
+      const token = localStorage.getItem("token");
+      login(token, userData);
+    },
+    onError: () => {
+      logout();
+    },
+    retry: false,
+    // staleTime: 5 * 60 * 1000, // Данные считаются свежими 5 минут.
+    staleTime: Infinity, // Данные считаются свежими всегда
 
-          if (e.response.status === 401) {
-            useAuthStore.getState().logout();
-          }
-        });
-    }
+    refetchOnWindowFocus: false, // НЕ делать запрос при каждом возвращении во вкладку
+    refetchOnMount: false, // НЕ делать запрос, если данные уже есть в кэше
   });
+
+  if (isLoading && isAuthenticated) {
+    return <div>Проверка связи с сервером...</div>;
+  }
 
   return (
     <>
