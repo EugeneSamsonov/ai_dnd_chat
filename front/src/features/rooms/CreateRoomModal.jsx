@@ -11,13 +11,13 @@ const CreateRoomModal = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [isAiDM, setisAiDM] = useState("");
   const [passcode, setPasscode] = useState("");
-  
+
   const queryClient = useQueryClient();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("rooms/", {
+      await api.post("rooms/", {
         name: name,
         isAiDM: isAiDM,
         passcode: passcode,
@@ -61,12 +61,12 @@ const CreateRoomModal = ({ isOpen, onClose }) => {
             placeholder="Пароль от комнаты (не обязательно)"
           />
           <label className="modal-checkbox">
+            Возможности ИИ ДМ'а
             <input
               type="checkbox"
               value={isAiDM}
               onChange={(e) => setisAiDM(e.target.value)}
             />
-            AI DM
           </label>
           <div className="modal-actions">
             <div

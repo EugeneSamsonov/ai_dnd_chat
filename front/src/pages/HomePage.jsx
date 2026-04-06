@@ -57,7 +57,7 @@ const HomePage = () => {
           <h1 className="center">Ваши приключения</h1>
           <div className="room-list">
             {rooms.map((room) => (
-              <div className="room-card-container">
+              <div key={room.id} className="room-card-container">
                 <div
                   key={room.id}
                   className="room-card-inner"
@@ -66,7 +66,7 @@ const HomePage = () => {
                   <h3>{room.name}</h3>
                   <p>
                     Идёт{" "}
-                    {room.status === "DM_TURN" ? "ход Мастера" : "ход Игроков"}
+                    {room.turn_status === "DM_TURN" ? "ход Мастера" : "ход Игроков"}
                   </p>
                   <span>Ход №{room.turn_count}</span>
                 </div>

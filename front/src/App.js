@@ -12,10 +12,16 @@ import Header from "./components/Header";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
+import RoomManagePage from "./pages/RoomManagePage";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+const AdminRoute = ({ children }) => {
+  const user = useAuthStore((state) => state.user);
+  return user?.is_staff ? children : <Navigate to="/" />;
 };
 
 function App() {
@@ -38,6 +44,7 @@ function App() {
 
     refetchOnWindowFocus: false, // НЕ делать запрос при каждом возвращении во вкладку
     refetchOnMount: false, // НЕ делать запрос, если данные уже есть в кэше
+    refetchOnReconnect: false,
   });
 
   if (isLoading && isAuthenticated) {
@@ -51,6 +58,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/rooms/:roomId" element={<RoomManagePage />} />
 
           {/* Защищенные роуты */}
           <Route
@@ -63,7 +71,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
-      <ToastContainer position="bottom-right" theme="dark" />
+      <ToastContainer limit={3} position="bottom-right" theme="dark" />
     </>
   );
 }
