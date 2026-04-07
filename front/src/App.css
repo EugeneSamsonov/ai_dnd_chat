@@ -427,5 +427,13 @@ input[type="checkbox"] {
   }
 }
 
+.owner-tag {
+  color: white;
+  font-weight: bold;
+  font-size: smaller;
 
+  background-color: #EE3D48;
+  padding: 5px;
 
+  border-radius: 5px;
+}

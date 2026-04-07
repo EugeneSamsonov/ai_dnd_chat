@@ -50,13 +50,17 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
     <div className="participant-card">
       <div className="participant-header">
         <span className="nickname">{participant.nickname}</span>
-        <button
-          type="button"
-          className="kick-button"
-          onClick={() => kickMutation.mutate(participant.id)}
-        >
-          Kick
-        </button>
+        {isOwner ? (
+          <span className="owner-tag">Владелец</span>
+        ) : (
+          <button
+            type="button"
+            className="kick-button"
+            onClick={() => kickMutation.mutate(participant.id)}
+          >
+            Kick
+          </button>
+        )}
       </div>
 
       <div className="participant-controls">
@@ -76,19 +80,21 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
           ))}
         </select>
 
-        {!isOwner && <label className="admin-checkbox">
-          <input
-            type="checkbox"
-            defaultChecked={participant.is_room_admin}
-            onChange={(e) =>
-              updateParticipantMutation.mutate({
-                participantId: participant.id,
-                payload: { is_room_admin: e.target.checked },
-              })
-            }
-          />
-          Admin
-        </label>}
+        {!isOwner && (
+          <label className="admin-checkbox">
+            <input
+              type="checkbox"
+              defaultChecked={participant.is_room_admin}
+              onChange={(e) =>
+                updateParticipantMutation.mutate({
+                  participantId: participant.id,
+                  payload: { is_room_admin: e.target.checked },
+                })
+              }
+            />
+            Admin
+          </label>
+        )}
       </div>
     </div>
   );

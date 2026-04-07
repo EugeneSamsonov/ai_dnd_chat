@@ -64,19 +64,19 @@ const RoomDetailPage = () => {
 
     if (newName !== room.name && newName) {
       payload.name = newName;
-      console.log(newName, room.name);
+      //   console.log(newName, room.name);
     } else payload.name = room.name;
 
     if (newIsAIDM !== room.is_ai_dm) payload.is_ai_dm = newIsAIDM;
 
     if (isNeedNewPassword) payload.passcode = newPassword;
 
-    if (Object.keys(payload).length <= 1) {
+    if (Object.keys(payload).length <= 1 && room.name === newName) {
       toast.error("Ничего не изменилось!");
       return;
     }
 
-    console.log(payload);
+    // console.log(payload);
     updateRoomMutation.mutate(payload);
   };
 
@@ -84,23 +84,26 @@ const RoomDetailPage = () => {
     if (isError) {
       handleApiError(error);
     }
-  }, [room, isError, error]);
+
+    if (!isPending && room) {
+      setNewIsAIDM(room.is_ai_dm);
+      setNewName(room.name);
+
+      const isCreator = String(room.creator) === String(user?.id);
+      const isAdmin = room.participants.some(
+        (p) => String(p.user) === String(user?.id) && p.is_room_admin,
+      );
+      if (!isCreator && !isAdmin) {
+        navigate("/");
+        return null;
+      }
+    }
+  }, [room, isPending, isError, error, navigate, user?.id]);
 
   if (isPending) return <div>Загрузка данных комнаты...</div>;
 
   if (room === undefined) {
     return <div>Загрузка данных комнаты...</div>;
-  }
-
-  if (!isPending && room) {
-    const isCreator = String(room.creator) === String(user?.id);
-    const isAdmin = room.participants.some(
-      (p) => String(p.user) === String(user?.id) && p.is_room_admin,
-    );
-    if (!isCreator && !isAdmin) {
-      navigate("/");
-      return null;
-    }
   }
 
   return (
