@@ -20,7 +20,7 @@ class Room(models.Model):
         verbose_name="Пароль", max_length=128, blank=True, null=True
     )
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="DM_TURN")
+    turn_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="DM_TURN")
     turn_count = models.PositiveIntegerField(
         verbose_name="Номер текущего хода", default=1
     )
@@ -42,7 +42,6 @@ class Participant(models.Model):
         ("PLAYER", "Игрок"),
         ("SPECTATOR", "Наблюдатель"),
         ("DM", "ДМ"),
-        ("ADMIN", "Администратор"),
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -51,9 +50,14 @@ class Participant(models.Model):
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="PLAYER")
 
-    # Имя персонажа для игрового чата (чтобы не светить username)
+    # Имя персонажа для игрового чата (чтобы не светить username и для оптимизации чата)
     nickname = models.CharField(max_length=50, blank=True, null=True)
     joined_at = models.DateTimeField(auto_now_add=True)
 
+    is_room_admin = models.BooleanField(default=False)
+
     class Meta:
         unique_together = ("user", "room")  # Защита от дублей в одной комнате
+
+    def __str__(self):
+        return f"{self.id} {self.user.username} ({self.room.name})"

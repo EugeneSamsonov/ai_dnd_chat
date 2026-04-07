@@ -12,21 +12,23 @@ class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participant
         fields = "__all__"
-        read_only_fields = ["id", "user", "room", "role", "nickname", "joined_at"]
+        read_only_fields = ["user", "room", "joined_at"]
+        # read_only_fields = ["id", "user", "room", "role", "nickname", "joined_at"]
 
 
 class RoomSerializer(serializers.ModelSerializer):
     participants = ParticipantSerializer(many=True, read_only=True)
-    creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    
 
     class Meta:
         model = Room
         fields = "__all__"
         read_only_fields = [
             "id",
-            "name",
+            # "name",
             "creator",
-            "is_ai_dm",
+            # "is_ai_dm",
             # "passcode",
             "status",
             "turn_count",
