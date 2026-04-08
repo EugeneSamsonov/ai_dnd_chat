@@ -95,7 +95,6 @@ const RoomDetailPage = () => {
       );
       if (!isCreator && !isAdmin) {
         navigate("/");
-        return null;
       }
     }
   }, [room, isPending, isError, error, navigate, user?.id]);

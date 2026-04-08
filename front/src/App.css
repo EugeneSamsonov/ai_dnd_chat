@@ -253,7 +253,7 @@ header nav {
   position: relative;
 
   align-items: center;
-  justify-content: center
+  justify-content: center;
 }
 
 .room-settings {
@@ -337,11 +337,13 @@ header nav {
   padding: 12px 20px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
-  transition: transform 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
 }
 
 .participant-card:hover {
-  border-color: #EE3D48;
+  border-color: #ee3d48;
 }
 
 /* Левая часть: Ник и Кнопка */
@@ -362,8 +364,8 @@ header nav {
 
 .kick-button {
   background: transparent;
-  color: #EE3D48;
-  border: 1px solid #EE3D48;
+  color: #ee3d48;
+  border: 1px solid #ee3d48;
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -372,7 +374,7 @@ header nav {
 }
 
 .kick-button:hover {
-  background: #EE3D48;
+  background: #ee3d48;
   color: #fff;
 }
 
@@ -394,7 +396,7 @@ header nav {
 }
 
 .participant-controls select:focus {
-  border-color: #EE3D48;
+  border-color: #ee3d48;
 }
 
 .admin-checkbox {
@@ -409,7 +411,7 @@ header nav {
 input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #EE3D48; /* Твой основной красный цвет */
+  accent-color: #ee3d48; /* Твой основной красный цвет */
   cursor: pointer;
 }
 
@@ -420,7 +422,7 @@ input[type="checkbox"] {
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .participant-controls {
     width: 100%;
     justify-content: space-between;
@@ -432,8 +434,27 @@ input[type="checkbox"] {
   font-weight: bold;
   font-size: smaller;
 
-  background-color: #EE3D48;
+  background-color: #ee3d48;
   padding: 5px;
 
   border-radius: 5px;
+}
+
+.room-join-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+
+
+  align-items: center;
+  justify-content: center;
+}
+
+.room-join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin-top: 5%;
 }
