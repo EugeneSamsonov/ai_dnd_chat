@@ -64,7 +64,6 @@ const RoomDetailPage = () => {
 
     if (newName !== room.name && newName) {
       payload.name = newName;
-      //   console.log(newName, room.name);
     } else payload.name = room.name;
 
     if (newIsAIDM !== room.is_ai_dm) payload.is_ai_dm = newIsAIDM;
@@ -76,7 +75,6 @@ const RoomDetailPage = () => {
       return;
     }
 
-    // console.log(payload);
     updateRoomMutation.mutate(payload);
   };
 

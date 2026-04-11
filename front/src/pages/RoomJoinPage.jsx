@@ -24,7 +24,7 @@ const RoomJoinPage = () => {
     onSuccess: () => {
       toast.success("Вы успешно вошли в комнату!");
       queryClient.invalidateQueries({ queryKey: ["rooms"] });
-      navigate(`/rooms/${roomId}`);
+      navigate(`/`);
     },
     retry: false,
   });
