@@ -1,11 +1,14 @@
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
-from .serializers import ParticipantSerializer, RoomSerializer
+from .serializers import ParticipantSerializer, RoomJoinSerializer, RoomSerializer
 from ..models import Participant, Room
 from .permissions import IsRoomAdmin
 
@@ -19,6 +22,9 @@ class RoomViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
+        if self.action == "join":
+            return Room.objects.all()
+
         return (
             Room.objects.filter(participants__user=self.request.user)
             .prefetch_related("participants__user")
@@ -36,6 +42,39 @@ class RoomViewSet(viewsets.ModelViewSet):
                 nickname=self.request.user.username,
             )
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.creator:
+            raise ValidationError(
+                {"error": "Удалить комнату может только ее создатель"}
+            )
+        return super().destroy(instance)
+
+    @extend_schema(
+        request=RoomJoinSerializer, responses={201: None}, tags=["Игровые комнаты"]
+    )
+    @action(methods=["post"], detail=True, permission_classes=[IsAuthenticated])
+    def join(self, request, *args, **kwargs):
+        serializer = RoomJoinSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        room = self.get_object()
+
+        if Participant.objects.filter(user=request.user, room=room).exists():
+            raise ValidationError({"error": "Вы уже в этой комнате"})
+
+        if room.passcode and room.passcode != request.data.get("passcode"):
+            raise ValidationError({"error": "Неверный пароль"})
+
+        Participant.objects.create(
+            user=request.user, room=room, nickname=request.user.username
+        )
+
+        return Response(
+            {"detail": "Вы успешно присоединились к комнате"},
+            status=status.HTTP_201_CREATED,
+        )
+
 
 @extend_schema(tags=["Игровые участники"])
 class ParticipantViewSet(viewsets.ModelViewSet):
@@ -49,10 +88,9 @@ class ParticipantViewSet(viewsets.ModelViewSet):
         room = get_object_or_404(Room, id=self.kwargs.get("room_pk"))
         return Participant.objects.filter(room=room).order_by("-joined_at")
 
-
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.user == instance.room.creator:
-            raise ValidationError({"error": "Нельзя удалить создателя комнаты"})
-        
+            raise ValidationError({"error": "Нельзя выгнать создателя комнаты"})
+
         return super().destroy(request, *args, **kwargs)

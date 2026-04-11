@@ -11,9 +11,6 @@ class IsRoomAdmin(permissions.BasePermission):
         if isinstance(obj, Participant):
             obj = obj.room
 
-        if request.method == "DELETE":
-            return obj.creator == request.user
-
         return Participant.objects.filter(
             user=request.user, room=obj, is_room_admin=True
         ).exists()

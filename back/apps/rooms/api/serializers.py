@@ -35,3 +35,11 @@ class RoomSerializer(serializers.ModelSerializer):
             "ready_players",
         ]
         extra_kwargs = {"id": {"read_only": True}, "passcode": {"write_only": True}}
+
+
+class RoomJoinSerializer(serializers.ModelSerializer):
+    passcode = serializers.CharField(required=False)
+
+    class Meta:
+        model = Room
+        fields = ["passcode"]
