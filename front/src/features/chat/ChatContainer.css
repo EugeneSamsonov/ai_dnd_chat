@@ -1,0 +1,43 @@
+/* Основной контейнер чата */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  /* Занимает 95% ширины на мобилках и максимум 1000px на мониторах */
+  width: min(50%, 1000px);
+  /* Высота подстраивается под экран, оставляя отступы */
+  height: 80vh;
+  margin: 20px auto;
+  background: #f9f9f9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Табы (переключатели) */
+.chat-tabs {
+  display: flex;
+  background: #eee;
+}
+
+.chat-tabs button {
+  flex: 1;
+  /* padding: clamp(10px, 2vw, 15px); Адаптивные отступы */
+  padding: 0.5%; /* Адаптивные отступы */
+  border: none;
+  border-bottom: 2px solid #ddd;
+  cursor: pointer;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* Адаптивный шрифт */
+  transition: 0.3s;
+}
+
+.chat-tabs.ooc button.active {
+  background: #fff;
+  font-weight: bold;
+  border-bottom: 2px solid #007bff;
+}
+
+.chat-tabs.game button.active {
+  background: #fff;
+  font-weight: bold;
+  border-bottom: 2px solid #ee3d48;
+}

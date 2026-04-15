@@ -1,0 +1,42 @@
+/* Список сообщений */
+.messages-list {
+  flex: 1; /* Занимает всё свободное место */
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Элемент сообщения */
+.message-item {
+  display: flex;
+  flex-wrap: wrap; /* Если текст длинный, время уйдет вниз на узких экранах */
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff;
+  max-width: 90%;
+}
+
+.message-item.game { border-left: 4px solid #ee3d48; }
+.message-item.ooc { border-left: 4px solid #a4a4a4; }
+
+.author {
+  font-weight: bold;
+  color: #333;
+}
+
+.text {
+  margin: 0;
+  flex: 1;
+  min-width: 150px; /* Чтобы текст не сжимался слишком сильно */
+  word-break: break-word;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: #999;
+  margin-left: auto;
+}

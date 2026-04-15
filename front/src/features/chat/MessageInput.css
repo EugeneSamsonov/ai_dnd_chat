@@ -1,0 +1,33 @@
+/* Поле ввода */
+.message-input {
+  display: flex;
+  padding: 15px;
+  gap: 10px;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.message-input button {
+  padding: 0 20px;
+  background: #ee3d48;
+  color: white;
+  border: #ee3d48 1px solid;
+  border-radius: 20px;
+  cursor: pointer;
+  
+  /* Чтобы текст кнопки не переносился */
+  white-space: nowrap; 
+  transition: all 0.4s ease-in-out;
+}
+
+.message-input button:hover {
+  background: white;
+  color: #ee3d48;
+}

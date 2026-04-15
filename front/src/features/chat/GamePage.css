@@ -1,0 +1,67 @@
+/* Основной контейнер страницы */
+.game-page-layout {
+  display: grid;
+  /* Магия: если места меньше 600px, колонки станут в 1 ряд (1fr). 
+     Если места много — разделятся на 1 часть и 2 части. */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr 2fr));
+  
+  /* Альтернативный вариант для четкого разделения 1/3 и 2/3: */
+  grid-template-columns: clamp(250px, 33%, 400px) 1fr;
+  
+  gap: 20px;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  /* background-color: #1a1a1a;  */
+  background-color: eee; 
+  /* Темный фон для игровой атмосферы */
+}
+
+/* Сайдбар (1/3) */
+.sidebar {
+  /* background: #2a2a2a; */
+  background: white;
+  /* color: #fff; */
+  padding: 20px;
+  border-radius: 12px;
+  overflow-y: auto;
+  /* Ограничиваем высоту, чтобы не растягивал страницу */
+  max-height: calc(100vh - 40px);
+}
+
+/* Секция чата (2/3) */
+.chat-section {
+  display: flex;
+  flex-direction: column;
+  /* height: 100%; */
+  height: 99vh;
+}
+
+/* Перезаписываем стили контейнера чата, чтобы он занимал всё место в своей секции */
+.chat-section .chat-container {
+  width: 100%; /* Теперь он не min(95%, 1000px), а на всю колонку */
+  height: 100%;
+  margin: 0;
+  /* background: #222; */
+  background: #eee;
+}
+
+/* Адаптивность для мобилок без @media:
+   Если экран совсем узкий, грид сам перекинет .sidebar наверх. 
+   Если хочешь, чтобы сайдбар на мобилках вообще прятался или выезжал, 
+   лучше использовать flex-wrap. Но Grid — самый надежный для долей. */
+
+@media (max-width: 768px) {
+  .game-page-layout {
+    grid-template-columns: 1fr; /* На планшетах и мобилках в одну колонку */
+    height: auto;
+  }
+  
+  .sidebar {
+    max-height: 300px; /* Чтобы игроки не занимали весь первый экран */
+  }
+  
+  .chat-section {
+    height: 70vh; /* Фиксируем высоту чата на мобилках */
+  }
+}

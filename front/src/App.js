@@ -14,6 +14,7 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import RoomManagePage from "./pages/RoomManagePage";
 import RoomJoinPage from "./pages/RoomJoinPage";
+import GamePage from "./pages/GamePage";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -78,6 +79,14 @@ function App() {
             element={
               <PrivateRoute>
                 <RoomJoinPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/rooms/:roomId/chat"
+            element={
+              <PrivateRoute>
+                <GamePage />
               </PrivateRoute>
             }
           />

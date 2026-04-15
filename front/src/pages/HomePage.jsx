@@ -61,7 +61,7 @@ const HomePage = () => {
                 <div
                   key={room.id}
                   className="room-card-inner"
-                  onClick={() => navigate(`/rooms/${room.id}`)}
+                  onClick={() => navigate(`/rooms/${room.id}/chat`)}
                 >
                   <h3>{room.name}</h3>
                   <p>
