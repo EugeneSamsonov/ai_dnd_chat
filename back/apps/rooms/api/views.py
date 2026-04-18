@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
+from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
@@ -8,7 +9,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import ParticipantSerializer, RoomJoinSerializer, RoomSerializer
+from .serializers import (
+    ParticipantSerializer,
+    RoomDetailSerializer,
+    RoomJoinSerializer,
+    RoomSerializer,
+)
 from ..models import Participant, Room
 from .permissions import IsRoomAdmin
 
@@ -25,11 +31,24 @@ class RoomViewSet(viewsets.ModelViewSet):
         if self.action == "join":
             return Room.objects.all()
 
-        return (
-            Room.objects.filter(participants__user=self.request.user)
-            .prefetch_related("participants__user")
-            .order_by("-created_at")
+        queryset = Room.objects.filter(participants__user=self.request.user).order_by(
+            "-created_at"
         )
+
+        return queryset.prefetch_related(
+            Prefetch(
+                "participants",
+                queryset=Participant.objects.filter(user=self.request.user),
+                to_attr="current_participant",
+            )
+        )
+
+    def get_serializer_class(self):
+        # Если действие - просмотр одного объекта (retrieve)
+        if self.action == "retrieve":
+            return RoomDetailSerializer
+        # Для остальных действий (list, create, update, destroy)
+        return RoomSerializer
 
     def perform_create(self, serializer):
         with transaction.atomic():

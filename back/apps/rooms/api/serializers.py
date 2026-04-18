@@ -16,10 +16,19 @@ class ParticipantSerializer(serializers.ModelSerializer):
         # read_only_fields = ["id", "user", "room", "role", "nickname", "joined_at"]
 
 
+class CurrentParticipantSerializer(serializers.ModelSerializer):
+    has_character = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Participant
+        fields = ("id", "role", "is_room_admin", "has_character")
+
+    def get_has_character(self, obj):
+        return hasattr(obj, "character") and obj.character is not None
+
+
 class RoomSerializer(serializers.ModelSerializer):
-    participants = ParticipantSerializer(many=True, read_only=True)
-    # creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    
+    current_participant = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
@@ -35,6 +44,21 @@ class RoomSerializer(serializers.ModelSerializer):
             "ready_players",
         ]
         extra_kwargs = {"id": {"read_only": True}, "passcode": {"write_only": True}}
+
+    def get_current_participant(self, obj):
+        # Достаем данные, которые мы сохранили в to_attr="current_participant"
+        participants = getattr(obj, "current_participant", [])
+        
+        if not participants:
+            return None
+            
+        participant = participants[0]
+        
+        return CurrentParticipantSerializer(participant).data
+
+
+class RoomDetailSerializer(RoomSerializer):
+    participants = ParticipantSerializer(many=True, read_only=True)
 
 
 class RoomJoinSerializer(serializers.ModelSerializer):
