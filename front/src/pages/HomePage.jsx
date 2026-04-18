@@ -12,12 +12,8 @@ import roomSettingsIcon from "../assets/roomSettingsIcon.png";
 const HomePage = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const currentUser = JSON.parse(localStorage.getItem("user"));
 
-  const isRoomAdmin = (room) =>
-    room.participants?.some(
-      (p) => String(p.user) === String(currentUser?.id) && p.is_room_admin,
-    );
+  const isRoomAdmin = (room) => room.current_participant.is_room_admin;
 
   const { data: rooms = [], isLoading } = useQuery({
     queryKey: ["rooms"],
@@ -26,11 +22,11 @@ const HomePage = () => {
         .get("rooms/")
         .then((response) => response.data.results)
         .catch((e) => handleApiError(e)),
-    staleTime: 60 * 60 * 1000, // Данные считаются свежими 60 минут.
-
-    refetchOnWindowFocus: false, // НЕ делать запрос при каждом возвращении во вкладку
-    refetchOnMount: false, // НЕ делать запрос, если данные уже есть в кэше
+    refetchOnMount: true,
+    staleTime: 0,
   });
+
+  console.log(rooms);
 
   if (isLoading) {
     return <h1>Загрузка...</h1>;
@@ -49,7 +45,6 @@ const HomePage = () => {
       <CreateRoomModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        // onRoomCreated={addNewRoom}
       />
 
       {rooms.length > 0 ? (
@@ -61,12 +56,23 @@ const HomePage = () => {
                 <div
                   key={room.id}
                   className="room-card-inner"
-                  onClick={() => navigate(`/rooms/${room.id}/chat`)}
+                  onClick={() => {
+                    if (
+                      room.current_participant.role === "PLAYER" &&
+                      !room.current_participant.has_character
+                    ) {
+                      navigate(`/rooms/${room.id}/create-character/`);
+                    } else {
+                      navigate(`/rooms/${room.id}/chat`);
+                    }
+                  }}
                 >
                   <h3>{room.name}</h3>
                   <p>
                     Идёт{" "}
-                    {room.turn_status === "DM_TURN" ? "ход Мастера" : "ход Игроков"}
+                    {room.turn_status === "DM_TURN"
+                      ? "ход Мастера"
+                      : "ход Игроков"}
                   </p>
                   <span>Ход №{room.turn_count}</span>
                 </div>

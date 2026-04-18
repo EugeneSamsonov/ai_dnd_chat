@@ -43,9 +43,11 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
   const updateParticipantMutation = useMutation({
     mutationFn: ({ participantId, payload }) =>
       api.patch(`rooms/${roomId}/participants/${participantId}/`, payload),
-    onSuccess: () => {
-      // queryClient.invalidateQueries(["room", roomId]);
-      queryClient.invalidateQueries({ queryKey: ["room", roomId] });
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["room", roomId] }),
+        queryClient.invalidateQueries({ queryKey: ["rooms"] }),
+      ]);
       toast.success("Игрок обновлен");
     },
     onError: (error) => {

@@ -9,7 +9,7 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 
 import "./ChatContainer.css";
-
+// TODO Сделать разделение на GAME и OOC сообщений чтобы 50 ООС не перекрывали игровые
 const ChatContainer = () => {
   const [activeTab, setActiveTab] = useState("GAME"); // 'GAME' или 'OOC'
 
@@ -22,13 +22,13 @@ const ChatContainer = () => {
   } = useQuery({
     queryKey: ["messages", roomId],
     queryFn: () => fetchRoomData(roomId),
-    refetchInterval: 2000, 
-    refetchIntervalInBackground: true, 
+    refetchInterval: 2000,
+    refetchIntervalInBackground: true,
   });
 
   const fetchRoomData = async (id) => {
     const { data } = await api.get(`chat/messages`, {
-      params: { room: id }, // axios автоматически превратит это в ?room=id
+      params: { room: id },
     });
     return data.results;
   };
