@@ -23,6 +23,7 @@
   background: white;
   /* color: #fff; */
   padding: 20px;
+  padding-top: 0;
   border-radius: 12px;
   overflow-y: auto;
   /* Ограничиваем высоту, чтобы не растягивал страницу */
@@ -44,6 +45,152 @@
   margin: 0;
   /* background: #222; */
   background: #eee;
+}
+
+/* Базовая карточка */
+.participant-character-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.3s ease;
+
+  margin-bottom: 2.5%;
+}
+
+.participant-character-card:hover {
+  transform: translateY(-2px);   
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);   
+  border-color: #ccc;
+}
+
+/* Если персонажа нет (DM или Наблюдатель) — делаем карточку компактнее */
+.participant-character-card:not(:has(.char-info)) {
+  min-height: auto;
+  justify-content: center;
+  padding: 10px 14px;
+}
+
+.participant-character-card.dm {
+  border: 2px solid #ee3d48;
+}
+
+.participant-character-card.dm .game-admin-tag {
+  color: #ee3d48;
+}
+
+/* Тэг DM (роль) */
+.game-owner-tag {
+  position: absolute;
+  top: -9px;
+  left: 10px;
+  /* background: #333; */
+  /* color: white; */
+  font-size: 1.0vw;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 3px;
+  z-index: 10;
+
+  background: #ee3d48;
+  color: white;
+}
+
+.game-admin-tag {
+  position: absolute;
+  top: -9px;
+  right: 10px;
+  background: white;
+  color: #444;
+  font-size: 1.0vw;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 3px;
+  z-index: 10;
+}
+
+.game-spectator-tag {
+  position: absolute;
+  top: -9px;
+  left: 10px;
+  background: white;
+  color: #ee3d48;
+  font-size: 1.0vw;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 3px;
+  z-index: 10;
+}
+
+/* Никнейм всегда виден */
+.participant-character-card strong {
+  font-size: 0.95rem;
+  color: #222;
+  margin: 0;
+}
+
+/* Инфо о персонаже (Lv, HP) */
+.char-info {
+  font-size: 0.8rem;
+  color: #777 !important;
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 4px;
+  margin: 2px 0;
+}
+
+/* Характеристики */
+.character-stats-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.character-stats-row span {
+  font-size: 0.7rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Инвентарь */
+.inv-preview {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-top: 5px;
+  border-top: 1px dashed #eee;
+  padding-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Текст-заглушка, если персонажа нет (для DM/Spectator) */
+.participant-character-card p:not([class]), 
+.no-char-text {
+  font-size: 0.75rem;
+  color: #bbb;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Выделение себя */
+.participant-character-card.self {
+  border-left: 4px solid #ee3d48;
+}
+
+.participant-character-card.spectator,
+.participant-character-card.dead {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.participant-info {
+    margin: 0;
 }
 
 /* Адаптивность для мобилок без @media:

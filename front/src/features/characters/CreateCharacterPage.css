@@ -1,0 +1,14 @@
+/* Контейнер страницы (центрирование) */
+.create-character-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* padding: 40px 10px; */
+  width: 100%;
+}
+
+.create-character-page h1 {
+  color: #333;
+  margin-bottom: 20px;
+  font-family: inherit;
+}

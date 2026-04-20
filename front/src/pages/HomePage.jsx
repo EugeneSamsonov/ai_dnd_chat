@@ -26,8 +26,6 @@ const HomePage = () => {
     staleTime: 0,
   });
 
-  console.log(rooms);
-
   if (isLoading) {
     return <h1>Загрузка...</h1>;
   }
@@ -61,7 +59,13 @@ const HomePage = () => {
                       room.current_participant.role === "PLAYER" &&
                       !room.current_participant.has_character
                     ) {
-                      navigate(`/rooms/${room.id}/create-character/`);
+                      navigate(`/rooms/${room.id}/participants/${room.current_participant.id}/create-character/`);
+                    } else if (
+                      room.current_participant.role === "DM" &&
+                      !room.has_world &&
+                      room.current_participant.is_room_admin
+                    ) {
+                      navigate(`/rooms/${room.id}/create-world/`);
                     } else {
                       navigate(`/rooms/${room.id}/chat`);
                     }

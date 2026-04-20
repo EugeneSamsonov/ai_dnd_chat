@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import RoomManagePage from "./pages/RoomManagePage";
 import RoomJoinPage from "./pages/RoomJoinPage";
 import GamePage from "./pages/GamePage";
+import CreateCharacterPage from "./pages/CreateCharacterPage";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -87,6 +88,14 @@ function App() {
             element={
               <PrivateRoute>
                 <GamePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/rooms/:roomId/participants/:participantId/create-character"
+            element={
+              <PrivateRoute>
+                <CreateCharacterPage />
               </PrivateRoute>
             }
           />

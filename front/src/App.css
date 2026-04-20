@@ -25,18 +25,33 @@ form {
   font-size: 100%;
 }
 
-form input {
+form input,
+form textarea {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 100%;
   transition: all 0.2s ease-in-out;
+  font-family: inherit; /* Чтобы шрифт в textarea не менялся на системный */
+  box-sizing: border-box; /* Чтобы padding не раздувал ширину */
+  font-size: 1.2vw;
 }
+
+/* Состояния при наведении и фокусе */
 form input:hover,
 form input:focus,
-form input:active {
+form input:active,
+form textarea:hover,
+form textarea:focus,
+form textarea:active {
   border: 1px solid #ee3d48;
   outline: none;
+}
+
+/* Настройки конкретно для textarea */
+form textarea {
+  min-height: 80px; /* Минимальная высота */
+  resize: vertical; /* Разрешаем растягивать только по вертикали */
 }
 
 form button {
@@ -290,6 +305,16 @@ header nav {
 
   color: gray;
   /* font-weight: bold; */
+}
+.stats-row span {
+  font-size: 0.75rem;
+  color: #444;
+  background: #f1f1f1;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
 .delete-room-btn {
