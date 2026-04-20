@@ -105,7 +105,14 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         room = get_object_or_404(Room, id=self.kwargs.get("room_pk"))
-        return Participant.objects.filter(room=room).order_by("-joined_at")
+        qs = Participant.objects.filter(room=room).order_by("-joined_at")
+
+        with_characters = self.request.query_params.get("withCharacters")
+
+        if with_characters=="true":
+            qs = qs.prefetch_related("character")
+
+        return qs
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

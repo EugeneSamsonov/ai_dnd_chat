@@ -33,6 +33,11 @@ class Room(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # game_core
+    world = models.ForeignKey(
+        "game_core.World", on_delete=models.SET_NULL, null=True, blank=True, default=None
+    )
+
     def __str__(self):
         return f"{self.name} ({self.id})"
 

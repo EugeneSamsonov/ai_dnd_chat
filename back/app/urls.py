@@ -37,4 +37,7 @@ urlpatterns = [
 
     # rooms API
     path('api/v1/rooms/', include('apps.rooms.api.urls')),
+
+    # game_core API
+    path('api/v1/game_core/', include('apps.game_core.api.urls')),
 ]

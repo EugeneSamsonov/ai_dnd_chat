@@ -1,10 +1,13 @@
 from rest_framework import serializers
 
+from apps.game_core.api.serializers import CharacterSerializer
+
 from ..models import Participant, Room
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
     is_ready = serializers.SerializerMethodField()
+    character = CharacterSerializer(read_only=True)
 
     def get_is_ready(self, obj):
         return obj.room.ready_players.filter(id=obj.user.id).exists()
@@ -29,6 +32,7 @@ class CurrentParticipantSerializer(serializers.ModelSerializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     current_participant = serializers.SerializerMethodField()
+    has_world = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
@@ -48,13 +52,16 @@ class RoomSerializer(serializers.ModelSerializer):
     def get_current_participant(self, obj):
         # Достаем данные, которые мы сохранили в to_attr="current_participant"
         participants = getattr(obj, "current_participant", [])
-        
+
         if not participants:
             return None
-            
+
         participant = participants[0]
-        
+
         return CurrentParticipantSerializer(participant).data
+    
+    def get_has_world(self, obj):
+        return obj.world is not None
 
 
 class RoomDetailSerializer(RoomSerializer):

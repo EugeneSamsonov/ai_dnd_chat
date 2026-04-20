@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'apps.rooms',
     'apps.chat',
+    'apps.game_core',
 ]
 
 MIDDLEWARE = [
