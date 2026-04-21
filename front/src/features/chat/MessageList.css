@@ -28,6 +28,25 @@
   color: #333;
 }
 
+.message-item.game.dm { 
+    border-color: #ee3d48;
+    border-left: 4px solid gold;
+    background-color: #fffb0007;
+ }
+
+ .message-item.ooc.dm { 
+    border-left: 4px solid gold;
+ }
+
+.message-item.ooc.spectator { 
+    border-left: 4px solid gray;
+    background-color: #9999991a;
+ }
+
+ .message-item.ooc.player { 
+    border-left: 4px solid #ee3d48;
+ }
+
 .text {
   margin: 0;
   flex: 1;

@@ -27,10 +27,17 @@ const ChatContainer = () => {
   });
 
   const fetchRoomData = async (id) => {
-    const { data } = await api.get(`chat/messages`, {
-      params: { room: id },
-    });
-    return data.results;
+    if (activeTab === "OOC") {
+      const { data } = await api.get(`chat/messages/?chatType=OOC`, {
+        params: { room: id },
+      });
+      return data.results;
+    } else {
+      const { data } = await api.get(
+        `chat/messages/?room=${id}&withParticipantsAndCharacters=true&chatType=GAME`,
+      );
+      return data.results;
+    }
   };
 
   useEffect(() => {

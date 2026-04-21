@@ -193,6 +193,29 @@
     margin: 0;
 }
 
+.participant-character-can-move {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    color: #444;
+    font-size: 0.9vw;
+    font-weight: bold;
+    padding: 1px 6px;
+    border-radius: 3px;
+    z-index: 10;
+    
+    justify-content: center;
+    align-items: center;
+    display: flex
+}
+
+.participant-character-can-move input {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+}
+
 /* Адаптивность для мобилок без @media:
    Если экран совсем узкий, грид сам перекинет .sidebar наверх. 
    Если хочешь, чтобы сайдбар на мобилках вообще прятался или выезжал, 

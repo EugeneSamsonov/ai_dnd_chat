@@ -1,6 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 import api from "../api/axios";
 import { handleApiError } from "../utils/errorHandler";
@@ -13,6 +16,7 @@ const GamePage = () => {
   const user = useAuthStore((state) => state.user);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { roomId } = useParams();
   const { data: participants } = useQuery({
@@ -26,6 +30,20 @@ const GamePage = () => {
     onError: (err) => handleApiError(err),
   });
 
+  const updateParticipantCanMoveMutation = useMutation({
+    mutationFn: (data) => {
+      return api.put(`rooms/${roomId}/participants/${data.participantId}/`, {
+        can_move: data.can_move,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["room", roomId]);
+      queryClient.invalidateQueries(["participants", roomId]);
+      toast.success("Игрок обновлен!");
+    },
+    onError: (err) => handleApiError(err),
+  });
+
   return (
     <div className="game-page-layout">
       <aside className="sidebar">
@@ -35,10 +53,9 @@ const GamePage = () => {
             if (a.user === user.id) return -1;
             if (b.user === user.id) return 1;
 
-            
             if (a.role !== "SPECTATOR" && b.role === "SPECTATOR") return -1;
             if (a.role === "SPECTATOR" && b.role !== "SPECTATOR") return 1;
-            
+
             if (a.role === "DM" && b.role !== "DM") return -1;
             if (b.role === "DM" && a.role !== "DM") return 1;
 
@@ -65,11 +82,6 @@ const GamePage = () => {
                 (participant.character?.hp <= 0 ? "dead" : "")
               }
               key={participant.id}
-              onClick={() => {
-                if (participant.character !== null && participant.role === "PLAYER") {
-                    navigate(`/rooms/${roomId}/participants/${participant.id}/character/`)
-                }
-              }}
             >
               <p className="participant-info">
                 {participant.role === "DM" && (
@@ -83,25 +95,54 @@ const GamePage = () => {
                   <span className="game-admin-tag">Админ</span>
                 )}
               </p>
-              {participant.character !== null && participant.role === "PLAYER" && (
-                <>
-                  <p className="char-info">
-                    {participant.character.name} • {participant.character.level}{" "}
-                    Lv •{" "}
-                    {participant.character.hp <= 0
-                      ? " DEAD"
-                      : participant.character.hp + " HP"}
-                  </p>
-                  <div className="character-stats-row">
-                    <span>Сила {participant.character.strength}</span>
-                    <span>Ловкость {participant.character.agility}</span>
-                    <span>Интеллект {participant.character.intelligence}</span>
-                  </div>
-                  <p className="inv-preview">
-                    Инвентарь: {participant.character.inventory}
-                  </p>
-                </>
-              )}
+              {participant.character !== null &&
+                participant.role === "PLAYER" && (
+                  <>
+                    <div
+                      onClick={() => {
+                        if (
+                          participant.character !== null &&
+                          participant.role === "PLAYER"
+                        ) {
+                          navigate(
+                            `/rooms/${roomId}/participants/${participant.id}/character/`,
+                          );
+                        }
+                      }}
+                    >
+                      <p className="char-info">
+                        {participant.character.name} •{" "}
+                        {participant.character.level} Lv •{" "}
+                        {participant.character.hp <= 0
+                          ? " DEAD"
+                          : participant.character.hp + " HP"}
+                      </p>
+                      <div className="character-stats-row">
+                        <span>Сила {participant.character.strength}</span>
+                        <span>Ловкость {participant.character.agility}</span>
+                        <span>
+                          Интеллект {participant.character.intelligence}
+                        </span>
+                      </div>
+                      <p className="inv-preview">
+                        Инвентарь: {participant.character.inventory}
+                      </p>
+                    </div>
+                    <label className="participant-character-can-move">
+                      Может ли ходить
+                      <input
+                        type="checkbox"
+                        checked={participant.can_move}
+                        onChange={() =>
+                          updateParticipantCanMoveMutation.mutate({
+                            participantId: participant.id,
+                            can_move: !participant.can_move,
+                          })
+                        }
+                      />
+                    </label>
+                  </>
+                )}
             </div>
           ))}
       </aside>

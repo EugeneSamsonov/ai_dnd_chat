@@ -12,6 +12,7 @@
   border-radius: 20px;
   outline: none;
   font-size: 1rem;
+  transition: all 0.4s ease-in-out;
 }
 
 .message-input button {
@@ -31,3 +32,8 @@
   background: white;
   color: #ee3d48;
 }
+
+.message-input button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}   
