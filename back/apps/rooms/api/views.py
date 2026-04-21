@@ -109,7 +109,7 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
         with_characters = self.request.query_params.get("withCharacters")
 
-        if with_characters=="true":
+        if with_characters == "true":
             qs = qs.prefetch_related("character")
 
         return qs
@@ -120,3 +120,18 @@ class ParticipantViewSet(viewsets.ModelViewSet):
             raise ValidationError({"error": "Нельзя выгнать создателя комнаты"})
 
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=["get"], url_path="me")
+    def me(self, request, *args, **kwargs):
+        room_id = kwargs.get("room_pk")
+        if not room_id:
+            return Response({"error": "Параметр room обязателен"}, status=400)
+
+        participant = get_object_or_404(
+            Participant.objects.select_related("character"),  # Сразу тянем персонажа
+            room_id=room_id,
+            user=request.user,
+        )
+
+        serializer = self.get_serializer(participant)
+        return Response(serializer.data)

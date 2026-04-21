@@ -28,7 +28,7 @@ class Character(models.Model):
     agility = models.IntegerField(default=10)
     intelligence = models.IntegerField(default=10)
 
-    inventory = models.TextField(blank=True)
+    inventory = models.TextField(blank=True, null=True)
 
 
     def __str__(self):
