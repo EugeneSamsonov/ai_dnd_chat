@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+from apps.rooms.api.serializers import ParticipantSerializer
+
 from ..models import Message
 
 
@@ -13,6 +15,7 @@ class SenderSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = SenderSerializer(read_only=True)
+    participant = ParticipantSerializer(read_only=True)
 
     class Meta:
         model = Message

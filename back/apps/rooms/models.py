@@ -1,6 +1,7 @@
-from django.db import models
-from django.conf import settings
 import uuid
+from django.db import models
+from django.db import transaction
+from django.conf import settings
 
 
 class Room(models.Model):
@@ -40,6 +41,31 @@ class Room(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.id})"
+    
+    def check_and_switch_turn(self):
+        with transaction.atomic():
+        # Блокируем строку комнаты в базе до конца транзакции
+            room = Room.objects.select_for_update().get(pk=self.pk)
+            
+            if room.turn_status == "DM_TURN":
+                room.turn_status = "PLAYERS_TURN"
+                room.save()
+                return
+
+            active_players = room.participants.filter(
+                role="PLAYER", 
+                character__hp__gt=0, # Живой?
+                can_move=True 
+            )
+            
+            active_count = active_players.count()
+            ready_count = room.ready_players.count()
+
+            if active_count > 0 and ready_count >= active_count:
+                room.turn_count += 1
+                room.turn_status = "DM_TURN"
+                room.ready_players.clear()
+                room.save()
 
 
 class Participant(models.Model):
@@ -60,6 +86,9 @@ class Participant(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
 
     is_room_admin = models.BooleanField(default=False)
+
+    # Для игрового чата
+    can_move = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ("user", "room")  # Защита от дублей в одной комнате

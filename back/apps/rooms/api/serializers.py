@@ -9,6 +9,16 @@ class ParticipantSerializer(serializers.ModelSerializer):
     is_ready = serializers.SerializerMethodField()
     character = CharacterSerializer(read_only=True)
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        if instance.role == "DM":
+            data["can_move"] = True
+        elif instance.role == "SPECTATOR":
+            data["can_move"] = False
+
+        return data
+
     def get_is_ready(self, obj):
         return obj.room.ready_players.filter(id=obj.user.id).exists()
 
@@ -24,10 +34,20 @@ class CurrentParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ("id", "role", "is_room_admin", "has_character")
+        fields = ("id", "role", "is_room_admin", "has_character", "can_move")
 
     def get_has_character(self, obj):
         return hasattr(obj, "character") and obj.character is not None
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        if instance.role == "DM":
+            data["can_move"] = True
+        elif instance.role == "SPECTATOR":
+            data["can_move"] = False
+
+        return data
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -59,7 +79,7 @@ class RoomSerializer(serializers.ModelSerializer):
         participant = participants[0]
 
         return CurrentParticipantSerializer(participant).data
-    
+
     def get_has_world(self, obj):
         return obj.world is not None
 

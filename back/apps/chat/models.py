@@ -13,6 +13,12 @@ class Message(models.Model):
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
+    participant = models.ForeignKey(
+        'rooms.Participant', 
+        on_delete=models.SET_NULL, 
+        related_name='messages',
+        null=True
+    )
 
     text = models.TextField(verbose_name="Текст сообщения")
     chat_type = models.CharField(max_length=10, choices=CHAT_TYPES, default="GAME")
