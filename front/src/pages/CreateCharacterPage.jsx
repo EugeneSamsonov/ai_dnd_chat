@@ -16,6 +16,16 @@ const CreateCharacterPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const defaultValues = {
+    name: "",
+    bio: "",
+    hp: 100,
+    level: 1,
+    strength: 10,
+    agility: 10,
+    intelligence: 10,
+  };
+
   const createCharacterMutation = useMutation({
     mutationFn: (data) => {
       return api.post("game_core/characters/", {
@@ -31,11 +41,15 @@ const CreateCharacterPage = () => {
     onError: (err) => handleApiError(err),
   });
 
-
   return (
     <div className="create-character-page">
       <h1>Создание персонажа</h1>
-      <CharacterForm isLoading={createCharacterMutation.isPanding} onSubmit={createCharacterMutation.mutate}/>
+      <CharacterForm
+        isLoading={createCharacterMutation.isPanding}
+        onSubmit={createCharacterMutation.mutate}
+        defaultValues={defaultValues}
+        readOnly={false}
+      />
     </div>
   );
 };

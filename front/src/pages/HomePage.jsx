@@ -60,15 +60,16 @@ const HomePage = () => {
                       !room.current_participant.has_character
                     ) {
                       navigate(`/rooms/${room.id}/participants/${room.current_participant.id}/create-character/`);
-                    } else if (
-                      room.current_participant.role === "DM" &&
-                      !room.has_world &&
-                      room.current_participant.is_room_admin
-                    ) {
-                      navigate(`/rooms/${room.id}/create-world/`);
                     } else {
                       navigate(`/rooms/${room.id}/chat`);
-                    }
+                    } 
+                    // else if (
+                    //   room.current_participant.role === "DM" &&
+                    //   !room.has_world &&
+                    //   room.current_participant.is_room_admin
+                    // ) {
+                    //   navigate(`/rooms/${room.id}/create-world/`);
+                    // } 
                   }}
                 >
                   <h3>{room.name}</h3>

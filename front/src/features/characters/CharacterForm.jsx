@@ -1,32 +1,34 @@
 import { useForm } from "react-hook-form";
 
 import "./CharacterForm.css";
+import { toast } from "react-toastify";
 
-const CharacterForm = ({ onSubmit, isLoading }) => {
+const CharacterForm = ({ onSubmit, isLoading, isReadOnly, defaultValues }) => {
   const { register, handleSubmit } = useForm({
-    defaultValues: {
-      name: "",
-      bio: "",
-      hp: 100,
-      level: 1,
-      strength: 10,
-      agility: 10,
-      intelligence: 10,
-    },
+    defaultValues: defaultValues,
   });
 
   return (
-    <form className="character-form" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="character-form"
+      onSubmit={
+        isReadOnly
+          ? () => toast.error("Только для просмотра")
+          : handleSubmit(onSubmit)
+      }
+    >
       <input
         placeholder="Имя персонажа"
         {...register("name")}
         className="character-name"
+        disabled={isReadOnly}
         required
       />
       <textarea
         placeholder="Краткая биография"
         {...register("bio")}
         className="character-bio"
+        disabled={isReadOnly}
         required
       />
 
@@ -37,6 +39,7 @@ const CharacterForm = ({ onSubmit, isLoading }) => {
             type="number"
             {...register("strength")}
             className="character-strength"
+            disabled={isReadOnly}
             required
           />
         </label>
@@ -46,6 +49,7 @@ const CharacterForm = ({ onSubmit, isLoading }) => {
             type="number"
             {...register("agility")}
             className="character-agility"
+            disabled={isReadOnly}
             required
           />
         </label>
@@ -55,6 +59,7 @@ const CharacterForm = ({ onSubmit, isLoading }) => {
             type="number"
             {...register("intelligence")}
             className="character-intelligence"
+            disabled={isReadOnly}
             required
           />
         </label>
@@ -62,11 +67,14 @@ const CharacterForm = ({ onSubmit, isLoading }) => {
       <textarea
         placeholder="Инвентарь"
         {...register("inventory")}
+        disabled={isReadOnly}
         className="character-inventory"
-        required
       />
-
-      <button type="submit" disabled={isLoading}>Создать персонажа</button>
+      {!isReadOnly && (
+        <button type="submit" disabled={isLoading}>
+          Сохранить
+        </button>
+      )}
     </form>
   );
 };

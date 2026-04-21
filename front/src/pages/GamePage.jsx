@@ -66,7 +66,7 @@ const GamePage = () => {
               }
               key={participant.id}
               onClick={() => {
-                if (participant.character !== null) {
+                if (participant.character !== null && participant.role === "PLAYER") {
                     navigate(`/rooms/${roomId}/participants/${participant.id}/character/`)
                 }
               }}
@@ -83,7 +83,7 @@ const GamePage = () => {
                   <span className="game-admin-tag">Админ</span>
                 )}
               </p>
-              {participant.character !== null && (
+              {participant.character !== null && participant.role === "PLAYER" && (
                 <>
                   <p className="char-info">
                     {participant.character.name} • {participant.character.level}{" "}
