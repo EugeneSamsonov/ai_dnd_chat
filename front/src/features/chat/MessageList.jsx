@@ -19,20 +19,20 @@ const MessageList = ({ messages, type }) => {
     scrollToBottom();
   }, [filteredMessages]);
 
-  console.log(filteredMessages);
+//   console.log(filteredMessages);
 
   return (
     <div className="messages-list">
       {filteredMessages.map((msg) => (
         <div
           key={msg.id}
-          className={`message-item ${msg.chat_type.toLowerCase()} ${msg.participant.role.toLowerCase()}`}
+          className={`message-item ${msg.chat_type.toLowerCase()} ${msg.participant?.role.toLowerCase()}`}
         >
           {type === "OOC" ? (
             <span className="author">{msg.sender.username}:</span>
           ) : (
             <span className="author">
-              {msg.participant.role === "DM"
+              {msg.participant?.role === "DM"
                 ? "ДМ " + msg.sender.username
                 : msg.participant?.character?.name}
               :

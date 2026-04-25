@@ -13,7 +13,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const isRoomAdmin = (room) => room.current_participant.is_room_admin;
+  const isRoomAdmin = (room) => room.current_participant?.is_room_admin;
 
   const { data: rooms = [], isLoading } = useQuery({
     queryKey: ["rooms"],

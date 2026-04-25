@@ -155,16 +155,35 @@ const RoomDetailPage = () => {
       </form>
       <div className="manage-participant-cards-list">
         <h2>Участники</h2>
-        {room.participants.map((participant) => {
-          const isOwner = participant.user === room.creator;
-          return (
-            <ManageParticipantCard
-              participant={participant}
-              key={participant.id}
-              isOwner={isOwner}
-            />
-          );
-        })}
+        {room.participants
+          .filter((p) => !p.is_banned)
+          .map((participant) => {
+            const isOwner = participant.user === room.creator;
+            return (
+              <ManageParticipantCard
+                participant={participant}
+                key={participant.id}
+                isOwner={isOwner}
+              />
+            );
+          })}
+        {room.participants.filter((p) => p.is_banned).length > 0 && (
+          <>
+            <h2>Заблокированные участники</h2>
+            {room.participants
+              .filter((p) => p.is_banned)
+              .map((participant) => {
+                const isOwner = participant.user === room.creator;
+                return (
+                  <ManageParticipantCard
+                    participant={participant}
+                    key={participant.id}
+                    isOwner={isOwner}
+                  />
+                );
+              })}
+          </>
+        )}
       </div>
 
       <button

@@ -22,7 +22,7 @@ const ChatContainer = () => {
   } = useQuery({
     queryKey: ["messages", roomId],
     queryFn: () => fetchRoomData(roomId),
-    refetchInterval: 2000,
+    refetchInterval: 10000,
     refetchIntervalInBackground: true,
   });
 

@@ -4,6 +4,8 @@ const api = axios.create({
   // Убедись, что порт 8000 и путь совпадают с твоим urls.py
   baseURL: 'http://127.0.0.1:8000/api/v1/', 
 //   baseURL: 'http://192.168.1.165:8000/api/v1/', 
+//   baseURL: "http://192.168.48.94:8000/api/v1/",
+//   baseURL: "http://192.168.241.145:8000/api/v1/",
 });
 
 api.interceptors.request.use((config) => {

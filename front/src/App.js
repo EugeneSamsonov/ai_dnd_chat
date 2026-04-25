@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
+import { Outlet } from "react-router-dom";
 
 import { useAuthStore } from "./features/auth/authStore";
 import api from "./api/axios";
 
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+
+import ProtectedRoute from "./components/ProtectRouter";
 
 import Header from "./components/Header";
 import LoginPage from "./pages/LoginPage";
@@ -18,9 +21,9 @@ import GamePage from "./pages/GamePage";
 import CreateCharacterPage from "./pages/CreateCharacterPage";
 import CharacterDetailPage from "./pages/CharacterDetailPage";
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 function App() {
@@ -57,57 +60,32 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/rooms/:roomId"
-            element={
-              <PrivateRoute>
-                <RoomManagePage />
-              </PrivateRoute>
-            }
-          />
 
-          {/* Защищенные роуты */}
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <HomePage />
-              </PrivateRoute>
-            }
-          />
+          {/* Глобальная защита: только для залогиненных */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<HomePage />} />
 
-          <Route
-            path="/rooms/:roomId/join"
-            element={
-              <PrivateRoute>
-                <RoomJoinPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/rooms/:roomId/chat"
-            element={
-              <PrivateRoute>
-                <GamePage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/rooms/:roomId/participants/:participantId/create-character"
-            element={
-              <PrivateRoute>
-                <CreateCharacterPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/rooms/:roomId/participants/:participantId/character"
-            element={
-              <PrivateRoute>
-                <CharacterDetailPage />
-              </PrivateRoute>
-            }
-          />
+            <Route path="/rooms/:roomId/join" element={<RoomJoinPage />} />
+
+            <Route
+              path="/rooms/:roomId"
+              element={<ProtectedRoute checkMembership={true} />}
+            >
+              <Route path="chat" element={<GamePage />} />
+              <Route
+                path="participants/:participantId/character"
+                element={<CharacterDetailPage />}
+              />
+              <Route
+                path="participants/:participantId/create-character"
+                element={<CreateCharacterPage />}
+              />
+
+              <Route element={<ProtectedRoute requireAdmin={true} />}>
+                <Route index element={<RoomManagePage />} />
+              </Route>
+            </Route>
+          </Route>
         </Routes>
       </BrowserRouter>
       <ToastContainer limit={3} position="bottom-right" theme="dark" />

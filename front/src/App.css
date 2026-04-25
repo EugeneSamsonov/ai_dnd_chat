@@ -368,6 +368,11 @@ header nav {
     border-color 0.2s;
 }
 
+.participant-card.deleted {
+  opacity: 0.5;
+  /* pointer-events: none; */
+}
+
 .participant-card:hover {
   border-color: #ee3d48;
 }

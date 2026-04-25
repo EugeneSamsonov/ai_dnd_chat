@@ -25,11 +25,11 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
   const { roomId } = useParams();
 
   const kickMutation = useMutation({
-    mutationFn: (participantId) =>
-      api.delete(`rooms/${roomId}/participants/${participantId}/`),
+    mutationFn: ( {participantId, data} ) =>
+      api.patch(`rooms/${roomId}/participants/${participantId}/?all=true`, data),
     onSuccess: () => {
       queryClient.refetchQueries(["room", roomId]);
-      toast.success("Игрок исключен");
+      toast.success("Игрок обновлен!");
       // Если админ сам себя исключил то отправляем его на главную
       if (participant.user === user.id) {
         navigate("/");
@@ -42,7 +42,7 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
 
   const updateParticipantMutation = useMutation({
     mutationFn: ({ participantId, payload }) =>
-      api.patch(`rooms/${roomId}/participants/${participantId}/`, payload),
+      api.patch(`rooms/${roomId}/participants/${participantId}/?all=true`, payload),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["room", roomId] }),
@@ -56,7 +56,7 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
   });
 
   return (
-    <div className="participant-card">
+    <div className={`participant-card ${participant.is_banned ? "deleted" : ""}`}>
       <div className="participant-header">
         <span className="nickname">{participant.nickname}</span>
         {isOwner ? (
@@ -65,9 +65,12 @@ const ManageParticipantCard = ({ participant, isOwner }) => {
           <button
             type="button"
             className="kick-button"
-            onClick={() => kickMutation.mutate(participant.id)}
+            onClick={() => kickMutation.mutate({
+              participantId: participant.id,
+              data: { is_banned: !participant.is_banned },
+            })}
           >
-            Kick
+            {participant.is_banned ? "Восстановить" : "Забанить"}
           </button>
         )}
       </div>
