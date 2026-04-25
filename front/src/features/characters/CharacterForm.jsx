@@ -31,7 +31,28 @@ const CharacterForm = ({ onSubmit, isLoading, isReadOnly, defaultValues }) => {
         disabled={isReadOnly}
         required
       />
-
+      <div className="stats-grid">
+        <label>
+          Уровень:{" "}
+          <input
+            type="number"
+            {...register("level")}
+            className="character-level"
+            disabled={isReadOnly}
+            required
+          />
+        </label>
+        <label>
+          Здоровье:{" "}
+          <input
+            type="number"
+            {...register("hp")}
+            className="character-hp"
+            disabled={isReadOnly}
+            required
+          />
+        </label>
+      </div>
       <div className="stats-grid">
         <label>
           Сила:{" "}
