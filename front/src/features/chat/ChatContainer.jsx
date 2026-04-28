@@ -69,7 +69,7 @@ const ChatContainer = () => {
 
       {/* Передаем тип чата, чтобы фильтровать сообщения */}
       <MessageList messages={messages} type={activeTab} />
-
+      <button className="open-ai-promt-modal-button">AI</button>
       <MessageInput type={activeTab} />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
@@ -14,6 +14,24 @@ const MessageInput = ({ type, participant }) => {
   const queryClient = useQueryClient();
 
   const roomId = useParams().roomId;
+
+  const textareaRef = useRef(null);
+
+  const handleInput = (e) => {
+    const target = e.target;
+    target.style.height = "auto";
+    target.style.height = `${target.scrollHeight}px`;
+    setMessageText(target.value);
+  };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Сбрасываем в auto, чтобы определить новую минимальную высоту контента
+      textareaRef.current.style.height = "auto";
+      // Устанавливаем высоту по scrollHeight (даже если там пусто, будет min-height)
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [messageText]); // Следим за состоянием текста
 
   const { data: current_participant, isLoading: loadingCurrentParticipant } =
     useQuery({
@@ -40,7 +58,7 @@ const MessageInput = ({ type, participant }) => {
   const handleSendMessage = () => {
     const data = {
       text: messageText,
-    }
+    };
     if (type === "GAME") {
       if (!current_participant.can_move) {
         toast.error("Вы не можете сделать ход!");
@@ -65,12 +83,13 @@ const MessageInput = ({ type, participant }) => {
 
   return (
     <div className={`message-input ${type.toLowerCase()}`}>
-      <input
-        type="text"
-        placeholder={`${type === "GAME" ? "Сделайте свой ход" : "Введите сообщение"}`}
-        onChange={(e) => {
-          setMessageText(e.target.value);
-        }}
+      <textarea
+        ref={textareaRef}
+        rows="1" // Начинаем с одной строки
+        placeholder={
+          type === "GAME" ? "Сделайте свой ход" : "Введите сообщение"
+        }
+        onChange={handleInput} // Используем нашу новую функцию
         value={messageText}
         disabled={type === "GAME" && !current_participant.can_move}
       />

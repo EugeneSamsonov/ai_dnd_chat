@@ -41,3 +41,49 @@
   font-weight: bold;
   border-bottom: 2px solid #ee3d48;
 }
+
+/* Основная кнопка AI */
+.open-ai-promt-modal-button {
+  position: absolute;
+  /* Поднимаем чуть выше основной линии ввода, чтобы она была над textarea или сбоку */
+  bottom: -10px; 
+  right: 32px;
+  z-index: 10;
+
+  background-color: #ee3d48;
+  border: 2px solid #ee3d48;
+  border-radius: 50%; /* Делаем круглой для акцента */
+  width: 45px;
+  height: 45px;
+  
+  color: white;
+  font-weight: 900;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  
+  /* Эффект свечения, так как это AI */
+  box-shadow: 0 4px 15px rgba(238, 61, 72, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Эффект при наведении */
+.open-ai-promt-modal-button:hover {
+  background-color: white;
+  color: #ee3d48;
+  transform: translateY(-3px) rotate(5deg);
+  box-shadow: 0 6px 20px rgba(238, 61, 72, 0.5);
+}
+
+/* Добавим небольшую пульсацию, чтобы кнопка "жила" */
+.open-ai-promt-modal-button::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #ee3d48;
+  opacity: 0;
+}

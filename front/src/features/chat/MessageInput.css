@@ -1,39 +1,74 @@
-/* Поле ввода */
+/* Контейнер поля ввода */
 .message-input {
   display: flex;
-  padding: 15px;
+  align-items: flex-end; /* Кнопка будет прижата к нижней линии при росте поля */
   gap: 10px;
-}
-
-.message-input input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  outline: none;
-  font-size: 1rem;
-  transition: all 0.4s ease-in-out;
-}
-
-.message-input button {
-  padding: 0 20px;
-  background: #ee3d48;
-  color: white;
-  border: #ee3d48 1px solid;
-  border-radius: 20px;
-  cursor: pointer;
-  
-  /* Чтобы текст кнопки не переносился */
-  white-space: nowrap; 
-  transition: all 0.4s ease-in-out;
-}
-
-.message-input button:hover {
+  padding: 15px;
   background: white;
-  color: #ee3d48;
+  /* border-top: 1px solid #ddd; */
 }
 
-.message-input button.disabled {
-  opacity: 0.5;
+/* Стилизация текстовой области */
+.message-input textarea {
+  flex: 1;
+  min-height: 40px; /* Минимальная высота (одна строка) */
+  max-height: 200px; /* Чтобы поле не заняло весь экран */
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Оставляем скругленным, как инпут */
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  resize: none; /* Убираем ручное изменение размера пользователем */
+  transition: border-color 0.2s;
+  
+  /* Магия переноса */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-y: auto; /* Скролл появится, если текст превысит max-height */
+}
+
+.message-input textarea:focus {
+  border-color: #ee3d48;
+  outline: none;
+}
+
+.message-input textarea:disabled {
+  background: #f5f5f5;
   cursor: not-allowed;
-}   
+}
+
+/* Кнопка отправки */
+.message-input button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Круглая кнопка со стрелкой */
+  border: none;
+  background-color: #ee3d48;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0; /* Чтобы кнопка не сжималась */
+  margin-bottom: 2px; /* Небольшая корректировка центровки */
+}
+
+.message-input button:hover:not(:disabled) {
+  transform: scale(1.1);
+  background-color: #d63641;
+}
+
+.message-input button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Стили для стрелочки внутри кнопки */
+.message-input button b {
+  font-size: 1.2rem;
+  line-height: 1;
+  display: block;
+  transform: translateY(-1px); /* Визуальная центровка значка ^ */
+}
