@@ -113,6 +113,22 @@ class ParticipantViewSet(viewsets.ModelViewSet):
             qs = qs.prefetch_related("character")
 
         return qs
+    
+    def perform_update(self, serializer):
+        room = Room.objects.filter(participants__user=self.request.user).first()
+        
+        if room.turn_status != "DM_TURN":
+            if 'can_move' in serializer.validated_data:
+                raise ValidationError({"error": "Вы можете поменять только во время хода Мастера!"})
+        
+        is_banned = serializer.validated_data.get('is_banned')
+        super().perform_update(serializer)
+
+        if 'is_banned' in serializer.validated_data and is_banned:
+            room.check_and_switch_turn()
+
+        
+
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

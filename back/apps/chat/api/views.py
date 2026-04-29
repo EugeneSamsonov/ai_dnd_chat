@@ -88,6 +88,9 @@ class MessageViewSet(viewsets.ModelViewSet):
 
                 if room.ready_players.filter(id=self.request.user.id).exists():
                     raise ValidationError({"error": "Вы уже сделали свой ход!"})
+                
+                if participant.character.hp <= 0:
+                    raise ValidationError({"error": "Вы умерли и не можете ходить!"})
 
                 room.ready_players.add(self.request.user)
 

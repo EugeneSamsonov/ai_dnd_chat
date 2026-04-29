@@ -21,7 +21,9 @@ class Room(models.Model):
         verbose_name="Пароль", max_length=128, blank=True, null=True
     )
 
-    turn_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="DM_TURN")
+    turn_status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="DM_TURN"
+    )
     turn_count = models.PositiveIntegerField(
         verbose_name="Номер текущего хода", default=1
     )
@@ -36,32 +38,39 @@ class Room(models.Model):
 
     # game_core
     world = models.ForeignKey(
-        "game_core.World", on_delete=models.SET_NULL, null=True, blank=True, default=None
+        "game_core.World",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
     )
 
     def __str__(self):
         return f"{self.name} ({self.id})"
-    
+
     def check_and_switch_turn(self):
         with transaction.atomic():
-        # Блокируем строку комнаты в базе до конца транзакции
+            # Блокируем строку комнаты в базе до конца транзакции
             room = Room.objects.select_for_update().get(pk=self.pk)
-            
-            if room.turn_status == "DM_TURN":
-                room.turn_status = "PLAYERS_TURN"
-                room.save()
-                return
 
             active_players = room.participants.filter(
-                role="PLAYER", 
-                character__hp__gt=0, # Живой?
-                can_move=True 
+                role="PLAYER",
+                character__hp__gt=0,  # Живой?
+                can_move=True,
+                is_banned=False,
             )
-            
+
             active_count = active_players.count()
             ready_count = room.ready_players.count()
 
-            if active_count > 0 and ready_count >= active_count:
+            if room.turn_status == "DM_TURN":
+                if active_count > 0:
+                    room.turn_status = "PLAYERS_TURN"
+                room.save()
+                return
+
+
+            if ready_count >= active_count:
                 room.turn_count += 1
                 room.turn_status = "DM_TURN"
                 room.ready_players.clear()
@@ -89,6 +98,8 @@ class Participant(models.Model):
 
     # Для игрового чата
     can_move = models.BooleanField(default=True)
+
+    is_banned = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("user", "room")  # Защита от дублей в одной комнате
