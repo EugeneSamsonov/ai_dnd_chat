@@ -49,7 +49,8 @@ const GamePage = () => {
       <aside className="sidebar">
         <h3>Игроки</h3>
         {participants
-          ?.sort((a, b) => {
+          ?.filter((participant) => participant.is_banned === false)
+          .sort((a, b) => {
             if (a.user === user.id) return -1;
             if (b.user === user.id) return 1;
 

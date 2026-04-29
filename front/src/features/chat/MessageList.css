@@ -36,6 +36,8 @@
   color: #333;
   margin: 0;
   word-wrap: break-word;
+
+  white-space: pre-wrap;
 }
 
 /* Время — компактное, в одной строке с текстом */

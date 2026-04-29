@@ -54,8 +54,8 @@ const CreateCharacterPage = () => {
   return (
     <div className="create-character-page">
       <h1>
-        {current_participant.is_room_admin ||
-        current_participant.user === participant.user
+        {current_participant.is_room_admin 
+        // || current_participant.user === participant.user
           ? "Редактировать профиль персонажа"
           : "Профиль персонажа"}
       </h1>
@@ -64,8 +64,8 @@ const CreateCharacterPage = () => {
         onSubmit={updateCharacterMutation.mutate}
         defaultValues={participant.character}
         isReadOnly={
-          !current_participant.is_room_admin &&
-          current_participant.user !== participant.user
+          !current_participant.is_room_admin 
+        //   && current_participant.user !== participant.user
         }
       />
     </div>
