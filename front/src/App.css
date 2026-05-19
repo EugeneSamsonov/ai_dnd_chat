@@ -254,6 +254,22 @@ header nav {
   /* background-color: #ee3d48; */
 }
 
+.room-card-copy-link {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.room-card-copy-link span {
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+}
+
+.room-card-copy-link:hover span {
+  color: #333;
+}
+
 .room-manager-container {
   display: flex;
   flex-direction: column;
@@ -476,7 +492,6 @@ input[type="checkbox"] {
   flex-direction: column;
   width: 80%;
   margin: auto;
-
 
   align-items: center;
   justify-content: center;

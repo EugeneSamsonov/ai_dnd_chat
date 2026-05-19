@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutationState } from "@tanstack/react-query";
 
 import api from "../../api/axios";
 import { handleApiError } from "../../utils/errorHandler";
 
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
+import AksAIModal from "./AskAIModal";
 
 import "./ChatContainer.css";
-// TODO Сделать разделение на GAME и OOC сообщений чтобы 50 ООС не перекрывали игровые
+
 const ChatContainer = () => {
   const [activeTab, setActiveTab] = useState("GAME"); // 'GAME' или 'OOC'
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { roomId } = useParams();
   const {
@@ -22,7 +24,7 @@ const ChatContainer = () => {
   } = useQuery({
     queryKey: ["messages", roomId],
     queryFn: () => fetchRoomData(roomId),
-    refetchInterval: 10000,
+    refetchInterval: 3000,
     refetchIntervalInBackground: true,
   });
 
@@ -39,6 +41,19 @@ const ChatContainer = () => {
       return data.results;
     }
   };
+
+  // Вытаскиваем состояние всех мутаций с нашим ключом из глобального кэша
+  const aiMutationStates = useMutationState({
+    filters: { mutationKey: ["ask-ai", roomId] },
+    select: (mutation) => ({
+      status: mutation.state.status, // "pending", "success", "error"
+      data: mutation.state.data,     // Тот самый ответ от бэка (response.data)
+      error: mutation.state.error,
+    }),
+  });
+
+  // Получаем состояние самой последней запущенной мутации ИИ
+  const lastAiRequest = aiMutationStates[aiMutationStates.length - 1];
 
   useEffect(() => {
     if (isError) {
@@ -69,8 +84,14 @@ const ChatContainer = () => {
 
       {/* Передаем тип чата, чтобы фильтровать сообщения */}
       <MessageList messages={messages} type={activeTab} />
-      <button className="open-ai-promt-modal-button">AI</button>
+      <button className="open-ai-promt-modal-button" onClick={() => {setIsModalOpen(true)}}>AI</button>
       <MessageInput type={activeTab} />
+
+      <AksAIModal
+        isOpen={isModalOpen}
+        data={lastAiRequest?.data}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
