@@ -84,7 +84,7 @@ class Participant(models.Model):
         ("DM", "ДМ"),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name="participants"
     )

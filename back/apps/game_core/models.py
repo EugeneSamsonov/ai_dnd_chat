@@ -33,3 +33,16 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name 
+    
+    def to_ai_representation(self):
+        return str(
+            {
+                "name": self.name,
+                "hp": self.hp,
+                "level": self.level,
+                "strength": self.strength,
+                "agility": self.agility,
+                "intelligence": self.intelligence,
+                "inventory": self.inventory,
+            }
+        )

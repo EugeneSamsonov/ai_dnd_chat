@@ -180,9 +180,14 @@ SPECTACULAR_SETTINGS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.165:3000",
-    "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://192.168.x.x:3000",
+    "http://localhost:3000",
+    "https://tunnel4.com",
+    "https://53098166-d3b8-4f2f-bf93-31e030d4d1c8.tunnel4.com",
+    "https://d603bc14bf8f02.lhr.life",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    "https://7ac6258312898d.lhr.life", 
+]

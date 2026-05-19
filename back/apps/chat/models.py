@@ -38,3 +38,18 @@ class Message(models.Model):
             "AI" if self.is_ai else (self.sender.username if self.sender else "System")
         )
         return f"[{self.chat_type}] {prefix}: {self.text[:30]}"
+
+
+    def to_ai_representation(self):
+        try:
+            sender_name = self.sender.participant.character.name
+        except AttributeError:
+            sender_name = self.sender
+
+        return str(
+            {
+                "sender": sender_name,
+                "text": self.text,
+                "turn_number": self.turn_number,
+            }
+        )

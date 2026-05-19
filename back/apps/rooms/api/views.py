@@ -59,6 +59,7 @@ class RoomViewSet(viewsets.ModelViewSet):
                 room=room,
                 is_room_admin=True,
                 nickname=self.request.user.username,
+                role="DM",
             )
 
     def destroy(self, request, *args, **kwargs):
@@ -80,7 +81,7 @@ class RoomViewSet(viewsets.ModelViewSet):
         room = self.get_object()
 
         if Participant.objects.filter(user=request.user, room=room).exists():
-            raise ValidationError({"error": "Вы уже в этой комнате"})
+            raise ValidationError({"error": "Вы уже участник этой комнаты"})
 
         if room.passcode and room.passcode != request.data.get("passcode"):
             raise ValidationError({"error": "Неверный пароль"})
